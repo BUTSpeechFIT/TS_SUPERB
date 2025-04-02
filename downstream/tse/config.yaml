@@ -1,0 +1,51 @@
+runner:
+  total_steps: 150000
+  gradient_clipping: 5.0
+  gradient_accumulate_steps: 1
+
+  log_step: 2000
+  eval_step: 4000
+  save_step: 10000
+  max_keep: 100
+  eval_dataloaders:
+    - dev
+
+scheduler:
+  name: linear_schedule_with_warmup
+  num_warmup_steps: 3000
+
+optimizer:
+  name: Adam
+  lr: 1.e-3
+
+speaker_conditioned: True
+
+downstream_expert:
+  datarc:
+    num_speakers: 1
+    rate: 16000
+    n_fft: 1024
+    win_length: 1024
+    window: "hann"
+    center: True
+
+  loaderrc:
+    num_workers: 4
+    train_batchsize: 8
+    eval_batchsize: 1
+    train_dir: data/speakerbeam/egs/libri2mix/data/wav16k/min/train-100
+    dev_dir: data/speakerbeam/egs/libri2mix/data/wav16k/min/dev
+    test_dir: data/speakerbeam/egs/libri2mix/data/wav16k/min/test
+
+  modelrc:
+    model: SepRNN
+    spk_extractor: MHFA
+    rnn: LSTM
+    rnn_layers: 3
+    hidden_size: 256
+    dropout: 0.3
+    non_linear: sigmoid
+    bidirectional: True
+    loss_type: TimeSISDR
+    mask_type: NPSM
+    log: log1p

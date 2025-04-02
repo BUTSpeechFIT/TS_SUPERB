@@ -1,0 +1,40 @@
+runner:
+  total_steps: 30000
+  gradient_clipping: 1
+  gradient_accumulate_steps: 1
+
+  log_step: 500
+  eval_step: 500
+  save_step: 500
+  max_keep: 1
+  eval_dataloaders:
+    - dev
+
+optimizer:
+  name: TorchOptim
+  torch_optim_name: Adam
+  lr: 1.0e-4
+
+speaker_conditioned: True
+
+downstream_expert:
+  datarc:
+    subsampling: 1
+    frame_shift: null
+    corpus: sparselibrimix
+
+  loaderrc:
+    num_workers: 8
+    train_batchsize: 32
+    eval_batchsize: 32
+    train_dir: data/sparselibrimix/train-100
+    dev_dir: data/sparselibrimix/dev
+    test_dir: data/sparselibrimix/test_2_0
+
+  modelrc:
+    rnn_layers: 2
+    bidirectional: True # False?
+    hidden_size: 64 # If bidirectional, the cell size is 32, but hidden size is 64
+    additional_linear: True
+    spk_extractor: MHFA # Affine
+
